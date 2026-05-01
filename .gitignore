@@ -73,3 +73,18 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Ignore Firebase folder
+Assets/Firebase/
+
+# Ignore Plugins folder
+Assets/Plugins/
+
+# Ignore TextMesh Pro folder
+Assets/TextMesh Pro/
+
+# Ignore all DLL files
+*.dll
+
+# Ignore Google Services config
+google-services.json
