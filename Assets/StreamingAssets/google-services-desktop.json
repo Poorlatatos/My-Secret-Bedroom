@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "124022427788",
+    "firebase_url": "https://my-secret-bedroom-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "my-secret-bedroom",
+    "storage_bucket": "my-secret-bedroom.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124022427788:android:2572b0016b90e955306ba9",
+        "android_client_info": {
+          "package_name": "My.Secret.Bedroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5V7-pjmaY2thgdUYiHbnUvEZ_3ENHbGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
