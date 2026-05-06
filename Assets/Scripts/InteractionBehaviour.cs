@@ -2,62 +2,57 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.XR.Interaction.Toolkit;
 
-public class InteractionScript : MonoBehaviour
+public class InteractionBehaviour : MonoBehaviour
 {
     public Camera vrCamera;
-    public Transform targetObject;
     public float zoomFOV = 30f;
     public float zoomSpeed = 2f;
     public float lockOnSpeed = 2f;
     public TMP_Text infoTextUI;
     public string infoTextFilePath = "Assets/InfoText.txt";
 
-    private bool isLockedOn = false;
     private float originalFOV;
+    private bool isGrabbed = false;
+    private Transform targetObject;
     private Dictionary<string, string> infoDict = new Dictionary<string, string>();
+
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
 
     void Start()
     {
         if (vrCamera == null)
             vrCamera = Camera.main;
+
         originalFOV = vrCamera.fieldOfView;
         LoadInfoText();
+
         if (infoTextUI != null)
             infoTextUI.text = "";
+
+        // Get grab component
+        grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+
+        // Subscribe to events
+        grabInteractable.selectEntered.AddListener(OnGrab);
+        grabInteractable.selectExited.AddListener(OnRelease);
     }
 
     void Update()
     {
-        if (IsObjectInView())
+        if (isGrabbed && targetObject != null)
         {
-            if (!isLockedOn)
-                isLockedOn = true;
-
-            ShowInfoText(targetObject.name);
-        }
-        else
-        {
-            if (isLockedOn)
-            {
-                isLockedOn = false;
-
-                if (infoTextUI != null)
-                    infoTextUI.text = "";
-            }
-        }
-
-        if (isLockedOn)
-        {
+            // Look at object
             Vector3 direction = (targetObject.position - vrCamera.transform.position).normalized;
             Quaternion lookRotation = Quaternion.LookRotation(direction);
-
             vrCamera.transform.rotation = Quaternion.Slerp(
                 vrCamera.transform.rotation,
                 lookRotation,
                 Time.deltaTime * lockOnSpeed
             );
 
+            // Zoom in
             vrCamera.fieldOfView = Mathf.Lerp(
                 vrCamera.fieldOfView,
                 zoomFOV,
@@ -66,6 +61,7 @@ public class InteractionScript : MonoBehaviour
         }
         else
         {
+            // Reset zoom
             vrCamera.fieldOfView = Mathf.Lerp(
                 vrCamera.fieldOfView,
                 originalFOV,
@@ -74,12 +70,21 @@ public class InteractionScript : MonoBehaviour
         }
     }
 
-    bool IsObjectInView()
+    void OnGrab(SelectEnterEventArgs args)
     {
-        Vector3 viewportPoint = vrCamera.WorldToViewportPoint(targetObject.position);
-        return viewportPoint.z > 0 &&
-               viewportPoint.x > 0 && viewportPoint.x < 1 &&
-               viewportPoint.y > 0 && viewportPoint.y < 1;
+        isGrabbed = true;
+        targetObject = transform;
+
+        ShowInfoText(gameObject.name);
+    }
+
+    void OnRelease(SelectExitEventArgs args)
+    {
+        isGrabbed = false;
+        targetObject = null;
+
+        if (infoTextUI != null)
+            infoTextUI.text = "";
     }
 
     void LoadInfoText()
@@ -112,6 +117,7 @@ public class InteractionScript : MonoBehaviour
     void ShowInfoText(string objectName)
     {
         if (infoTextUI == null) return;
+
         if (infoDict.TryGetValue(objectName, out string info))
         {
             infoTextUI.text = info;
