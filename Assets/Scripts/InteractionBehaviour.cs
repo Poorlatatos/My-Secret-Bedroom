@@ -11,14 +11,16 @@ public class InteractionBehaviour : MonoBehaviour
     public float zoomSpeed = 2f;
     public float lockOnSpeed = 2f;
     public TMP_Text infoTextUI;
+    public GameObject blackScreenOverlay;
     public string infoTextFilePath = "Assets/InfoText.txt";
 
     private float originalFOV;
-    private bool isGrabbed = false;
+    private bool isTriggered = false;
     private Transform targetObject;
     private Dictionary<string, string> infoDict = new Dictionary<string, string>();
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable simpleInteractable;
+    
 
     void Start()
     {
@@ -31,17 +33,17 @@ public class InteractionBehaviour : MonoBehaviour
         if (infoTextUI != null)
             infoTextUI.text = "";
 
-        // Get grab component
-        grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        // Get simple interactable component
+        simpleInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
 
         // Subscribe to events
-        grabInteractable.selectEntered.AddListener(OnGrab);
-        grabInteractable.selectExited.AddListener(OnRelease);
+        simpleInteractable.selectEntered.AddListener(OnTriggerEnter);
+        simpleInteractable.selectExited.AddListener(OnTriggerExit);
     }
 
     void Update()
     {
-        if (isGrabbed && targetObject != null)
+        if (isTriggered && targetObject != null)
         {
             // Look at object
             Vector3 direction = (targetObject.position - vrCamera.transform.position).normalized;
@@ -70,21 +72,27 @@ public class InteractionBehaviour : MonoBehaviour
         }
     }
 
-    void OnGrab(SelectEnterEventArgs args)
+    void OnTriggerEnter(SelectEnterEventArgs args)
     {
-        isGrabbed = true;
+        isTriggered = true;
         targetObject = transform;
 
         ShowInfoText(gameObject.name);
+
+        if (blackScreenOverlay != null)
+            blackScreenOverlay.SetActive(true);
     }
 
-    void OnRelease(SelectExitEventArgs args)
+    void OnTriggerExit(SelectExitEventArgs args)
     {
-        isGrabbed = false;
+        isTriggered = false;
         targetObject = null;
 
         if (infoTextUI != null)
             infoTextUI.text = "";
+
+        if (blackScreenOverlay != null)
+            blackScreenOverlay.SetActive(false);
     }
 
     void LoadInfoText()
