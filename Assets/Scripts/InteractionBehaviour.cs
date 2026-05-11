@@ -13,7 +13,7 @@ public class InteractionBehaviour : MonoBehaviour
     public TMP_Text infoTextUI;
     public GameObject blackScreenOverlay;
     public string infoTextFilePath = "Assets/InfoText.txt";
-
+    public TypewriterEffect typewriterEffect;
     private float originalFOV;
     private bool isTriggered = false;
     private Transform targetObject;
@@ -88,13 +88,12 @@ public class InteractionBehaviour : MonoBehaviour
         isTriggered = false;
         targetObject = null;
 
-        if (infoTextUI != null)
-            infoTextUI.text = "";
+        if (typewriterEffect != null)
+            typewriterEffect.Clear();
 
         if (blackScreenOverlay != null)
             blackScreenOverlay.SetActive(false);
     }
-
     void LoadInfoText()
     {
         if (!File.Exists(infoTextFilePath))
@@ -124,15 +123,15 @@ public class InteractionBehaviour : MonoBehaviour
 
     void ShowInfoText(string objectName)
     {
-        if (infoTextUI == null) return;
+        if (typewriterEffect == null) return;
 
         if (infoDict.TryGetValue(objectName, out string info))
         {
-            infoTextUI.text = info;
+            typewriterEffect.StartTypewriter(info);
         }
         else
         {
-            infoTextUI.text = "";
+            typewriterEffect.Clear();
         }
     }
 }
