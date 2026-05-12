@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Anchor
+  - HeadTriggerFront
+  - HeadTriggerLeft
+  - HeadTriggerRight
+  - HeadTriggerBack
   layers:
   - Default
   - TransparentFX
