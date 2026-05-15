@@ -10,17 +10,24 @@ public class InteractionBehaviour : MonoBehaviour
     public float zoomFOV = 30f;
     public float zoomSpeed = 2f;
     public float lockOnSpeed = 2f;
+
     public TMP_Text infoTextUI;
+
+    // UI IMAGE PANEL
+    public GameObject infoPanelUI;
+
     public GameObject blackScreenOverlay;
     public string infoTextFilePath = "Assets/InfoText.txt";
+
     public TypewriterEffect typewriterEffect;
+
     private float originalFOV;
     private bool isTriggered = false;
     private Transform targetObject;
+
     private Dictionary<string, string> infoDict = new Dictionary<string, string>();
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable simpleInteractable;
-    
 
     void Start()
     {
@@ -28,15 +35,20 @@ public class InteractionBehaviour : MonoBehaviour
             vrCamera = Camera.main;
 
         originalFOV = vrCamera.fieldOfView;
+
         LoadInfoText();
 
         if (infoTextUI != null)
             infoTextUI.text = "";
 
-        // Get simple interactable component
+        // Hide UI panel at start
+        if (infoPanelUI != null)
+            infoPanelUI.SetActive(false);
+
+        // Get interactable component
         simpleInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
 
-        // Subscribe to events
+        // Subscribe to XR events
         simpleInteractable.selectEntered.AddListener(OnTriggerEnter);
         simpleInteractable.selectExited.AddListener(OnTriggerExit);
     }
@@ -47,7 +59,9 @@ public class InteractionBehaviour : MonoBehaviour
         {
             // Look at object
             Vector3 direction = (targetObject.position - vrCamera.transform.position).normalized;
+
             Quaternion lookRotation = Quaternion.LookRotation(direction);
+
             vrCamera.transform.rotation = Quaternion.Slerp(
                 vrCamera.transform.rotation,
                 lookRotation,
@@ -79,8 +93,13 @@ public class InteractionBehaviour : MonoBehaviour
 
         ShowInfoText(gameObject.name);
 
+        // Show black overlay
         if (blackScreenOverlay != null)
             blackScreenOverlay.SetActive(true);
+
+        // Show info panel UI
+        if (infoPanelUI != null)
+            infoPanelUI.SetActive(true);
     }
 
     void OnTriggerExit(SelectExitEventArgs args)
@@ -91,9 +110,15 @@ public class InteractionBehaviour : MonoBehaviour
         if (typewriterEffect != null)
             typewriterEffect.Clear();
 
+        // Hide black overlay
         if (blackScreenOverlay != null)
             blackScreenOverlay.SetActive(false);
+
+        // Hide info panel UI
+        if (infoPanelUI != null)
+            infoPanelUI.SetActive(false);
     }
+
     void LoadInfoText()
     {
         if (!File.Exists(infoTextFilePath))
@@ -106,11 +131,13 @@ public class InteractionBehaviour : MonoBehaviour
 
         foreach (string line in lines)
         {
-            if (string.IsNullOrWhiteSpace(line)) continue;
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
 
             string[] parts = line.Split(new char[] { '-' }, 2);
 
-            if (parts.Length < 2) continue;
+            if (parts.Length < 2)
+                continue;
 
             string key = parts[0].Trim();
             string value = parts[1].Trim().Trim('[', ']');
@@ -123,7 +150,8 @@ public class InteractionBehaviour : MonoBehaviour
 
     void ShowInfoText(string objectName)
     {
-        if (typewriterEffect == null) return;
+        if (typewriterEffect == null)
+            return;
 
         if (infoDict.TryGetValue(objectName, out string info))
         {
