@@ -168,10 +168,26 @@ public class ViewOnlyInteraction : MonoBehaviour
         if (infoDict.TryGetValue(objectName, out string info))
         {
             typewriterEffect.StartTypewriter(info);
+            StopAllCoroutines(); // Stop any previous coroutines
+            StartCoroutine(ShowInfoTextCoroutine(info));
         }
         else
         {
             typewriterEffect.Clear();
+        }
+    }
+
+    System.Collections.IEnumerator ShowInfoTextCoroutine(string info)
+    {
+        string[] segments = info.Split(new string[] { "<br>" }, System.StringSplitOptions.None);
+
+        foreach (string segment in segments)
+        {
+            typewriterEffect.Clear();
+            typewriterEffect.StartTypewriter(segment.Trim());
+            // Wait for the typewriter to finish (if you have a way to detect this), or just wait a fixed time
+            // Here, we wait 4 seconds after each segment
+            yield return new WaitForSeconds(4f);
         }
     }
 }
