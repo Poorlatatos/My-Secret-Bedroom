@@ -1,6 +1,6 @@
 Laptop - [Looking through someone's laptop might be an invasion of privacy and erodes trust. Consider reaching out to them and sharing your concerns instead.]
 Speaker - [Listening to emo songs does not necessarily mean that a young person has mental health issues.]
-Tablet - [Young people experiencing mental health distress might have difficulties completing their work due to a drop in motivation levels and energy levels. Instead of criticising them for unfinished work, approach them with concern.]
+Tablet - [Young people experiencing mental health distress might have difficulties completing their work due to a drop in motivation levels and energy levels. <br>Instead of criticising them for unfinished work, approach them with concern.]
 NoticeBoard - [Take interest in what the young person is interested in. It is important to build a connection with the young person, and to see them beyond their mental health struggles.]
 WallPoster - [Take interest in what the young person is interested in. It is important to build a connection with the young person, and to see them beyond their mental health struggles.]
 Calendar - [For some, a calendar serves as a reminder of the tasks and events they need to attend to. However, for a young person struggling with their mental health, attending social events, school/work can be difficult.]

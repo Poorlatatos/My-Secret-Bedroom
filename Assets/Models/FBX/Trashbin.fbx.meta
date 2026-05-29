@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7c4c85ce96263294cbcc51601306d4e8
+guid: 18336b5abd69766429d47429197fd033
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert5
-    second: {fileID: 2100000, guid: 9ab90d19e4673af43b74ae4a071b92cc, type: 2}
+      name: openPBR_shader1
+    second: {fileID: 2100000, guid: 71bd5fd4fb8c6604cacbeca2d1668739, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: standardSurface1
-    second: {fileID: 2100000, guid: 1bf20f1f0143be846b38dca2c612b326, type: 2}
+      name: openPBR_shader2
+    second: {fileID: 2100000, guid: 243b167c214b4af41a715740d6a4ed5b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

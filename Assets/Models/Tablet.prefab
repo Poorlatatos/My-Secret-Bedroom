@@ -24,14 +24,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594522676361200818}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.089709796, y: 0.70139307, z: 0.70139307, w: -0.089709796}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.3229995, y: 0.081673026, z: -0.33599126}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1510523559610707883}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 194.577}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2287166155917636881
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,14 +62,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2287166155917636881}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.16, y: -0.103, z: 0.295}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3309859790012132518}
   m_Father: {fileID: 6542804716454131387}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &2547259177696976910
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -164,6 +164,7 @@ MonoBehaviour:
   zoomSpeed: 2
   lockOnSpeed: 2
   infoTextUI: {fileID: 0}
+  infoPanelUI: {fileID: 0}
   blackScreenOverlay: {fileID: 7711190187472733621}
   infoTextFilePath: Assets/InfoText.txt
   typewriterEffect: {fileID: 0}
