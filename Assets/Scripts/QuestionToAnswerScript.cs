@@ -17,11 +17,14 @@ public class QuestionToAnswerScript : MonoBehaviour
     public HeadGestureDetector gestureDetector;
 
     [Header("Typewriter Effect")]
-    public TypewriterEffect typewriterEffect; // Assign in Inspector
+    public TypewriterEffect typewriterEffect;
 
+    [Header("Option Labels")]
+    public string yesLabel = "Yes";
+    public string noLabel = "No";
     private bool optionsVisible = false;
     private bool fading = false;
-
+    public ClothingLaundry clothingLaundry;
     void Start()
     {
         // Only hide Yes/No and clear question at start
@@ -48,12 +51,21 @@ public class QuestionToAnswerScript : MonoBehaviour
     void ShowOptions()
     {
         if (gestureDetector != null)
-            gestureDetector.ClearGestures(); // Clear any buffered gestures
+            gestureDetector.ClearGestures();
 
-        if (yesText != null) yesText.alpha = 1f;
-        if (noText != null) noText.alpha = 1f;
+        if (yesText != null) {
+            yesText.text = yesLabel;
+            yesText.alpha = 1f;
+        }
+        if (noText != null) {
+            noText.text = noLabel;
+            noText.alpha = 1f;
+        }
         optionsVisible = true;
         fading = false;
+
+        if (clothingLaundry != null)
+            clothingLaundry.EnableLaundryInteraction();
     }
 
     public void BeginQuestion()
@@ -62,6 +74,7 @@ public class QuestionToAnswerScript : MonoBehaviour
 
         if (typewriterEffect != null && questionText != null)
         {
+            questionText.gameObject.SetActive(true);
             typewriterEffect.textComponent = questionText;
             typewriterEffect.OnTypingComplete += ShowOptions;
             typewriterEffect.StartTypewriter(questionLine);
@@ -78,13 +91,25 @@ public class QuestionToAnswerScript : MonoBehaviour
         if (yesText != null) yesText.alpha = alpha;
         if (noText != null) noText.alpha = alpha;
     }
-
+    void ResetQuestionUI()
+    {
+        if (questionText != null)
+            questionText.text = "";
+        SetOptionsAlpha(0f);
+        optionsVisible = false;
+        fading = false;
+    }
     IEnumerator FadeOutOptions()
     {
         fading = true;
         float duration = 1.0f;
         float elapsed = 0f;
         float startAlpha = 1f;
+
+        // Hide the question text immediately
+        if (questionText != null)
+            questionText.text = "";
+            questionText.gameObject.SetActive(false);
 
         while (elapsed < duration)
         {
@@ -97,5 +122,6 @@ public class QuestionToAnswerScript : MonoBehaviour
         if (yesText != null) yesText.alpha = 0f;
         if (noText != null) noText.alpha = 0f;
         optionsVisible = false;
+        ResetQuestionUI();
     }
 }

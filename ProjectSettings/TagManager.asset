@@ -9,6 +9,7 @@ TagManager:
   - HeadTriggerLeft
   - HeadTriggerRight
   - HeadTriggerBack
+  - LaundryBasket
   layers:
   - Default
   - TransparentFX
