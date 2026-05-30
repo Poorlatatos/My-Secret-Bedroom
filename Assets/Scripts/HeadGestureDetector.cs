@@ -11,7 +11,8 @@ public class HeadGestureDetector : MonoBehaviour
     private float gestureThreshold = 30f; // degrees
     private float gestureCooldown = 1f; // seconds
     private float lastGestureTime = -10f;
-
+    private bool nodDetected = false;
+    private bool shakeDetected = false;
     void Start()
     {
         if (xrCamera == null)
@@ -22,15 +23,23 @@ public class HeadGestureDetector : MonoBehaviour
         }
         if (xrCamera != null)
         {
+            Debug.Log("HeadGestureDetector: xrCamera assigned to " + xrCamera.name);
             lastPitch = xrCamera.eulerAngles.x;
             lastYaw = xrCamera.eulerAngles.y;
+        }
+        else
+        {
+            Debug.LogWarning("HeadGestureDetector: xrCamera is not assigned!");
         }
     }
 
     void Update()
     {
         if (xrCamera == null)
+        {
+            Debug.LogWarning("HeadGestureDetector: xrCamera is null in Update!");
             return;
+        }
 
         float pitch = xrCamera.eulerAngles.x;
         float yaw = xrCamera.eulerAngles.y;
@@ -45,6 +54,7 @@ public class HeadGestureDetector : MonoBehaviour
         // Detect nod (yes)
         if (Mathf.Abs(nodAccumulator) > gestureThreshold && Time.time - lastGestureTime > gestureCooldown)
         {
+            nodDetected = true;
             Debug.Log("Yes");
             lastGestureTime = Time.time;
             nodAccumulator = 0f;
@@ -53,6 +63,7 @@ public class HeadGestureDetector : MonoBehaviour
         // Detect shake (no)
         else if (Mathf.Abs(shakeAccumulator) > gestureThreshold && Time.time - lastGestureTime > gestureCooldown)
         {
+            shakeDetected = true;
             Debug.Log("No");
             lastGestureTime = Time.time;
             nodAccumulator = 0f;
@@ -61,5 +72,22 @@ public class HeadGestureDetector : MonoBehaviour
 
         lastPitch = pitch;
         lastYaw = yaw;
+    }
+
+    public void ClearGestures()
+    {
+        nodDetected = false;
+        shakeDetected = false;
+    }
+
+    public bool DidNod()
+    {
+        if (nodDetected) { nodDetected = false; return true; }
+        return false;
+    }
+    public bool DidShake()
+    {
+        if (shakeDetected) { shakeDetected = false; return true; }
+        return false;
     }
 }

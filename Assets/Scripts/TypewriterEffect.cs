@@ -8,7 +8,7 @@ public class TypewriterEffect : MonoBehaviour
     public float typeSpeed = 0.05f; // Seconds per character
 
     private Coroutine typingCoroutine;
-
+    public event System.Action OnTypingComplete;
     public void StartTypewriter(string text)
     {
         if (typingCoroutine != null)
@@ -25,6 +25,7 @@ public class TypewriterEffect : MonoBehaviour
             textComponent.text += c;
             yield return new WaitForSeconds(typeSpeed);
         }
+        OnTypingComplete?.Invoke();
     }
 
     public void Clear()

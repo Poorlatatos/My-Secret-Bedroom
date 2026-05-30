@@ -20,7 +20,7 @@ public class InteractionBehaviour : MonoBehaviour
     public string infoTextFilePath = "Assets/InfoText.txt";
 
     public TypewriterEffect typewriterEffect;
-
+    public QuestionToAnswerScript questionToAnswerScript;
     private float originalFOV;
     private bool isTriggered = false;
     private Transform targetObject;
@@ -49,8 +49,8 @@ public class InteractionBehaviour : MonoBehaviour
         simpleInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
 
         // Subscribe to XR events
-        simpleInteractable.selectEntered.AddListener(OnTriggerEnter);
-        simpleInteractable.selectExited.AddListener(OnTriggerExit);
+        simpleInteractable.selectEntered.AddListener(OnSelectEnter);
+        simpleInteractable.selectExited.AddListener(OnSelectExit);
     }
 
     void Update()
@@ -86,7 +86,7 @@ public class InteractionBehaviour : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(SelectEnterEventArgs args)
+    void OnSelectEnter(SelectEnterEventArgs args)
     {
         isTriggered = true;
         targetObject = transform;
@@ -102,7 +102,7 @@ public class InteractionBehaviour : MonoBehaviour
             infoPanelUI.SetActive(true);
     }
 
-    void OnTriggerExit(SelectExitEventArgs args)
+    void OnSelectExit(SelectExitEventArgs args)
     {
         isTriggered = false;
         targetObject = null;
@@ -110,13 +110,15 @@ public class InteractionBehaviour : MonoBehaviour
         if (typewriterEffect != null)
             typewriterEffect.Clear();
 
-        // Hide black overlay
         if (blackScreenOverlay != null)
             blackScreenOverlay.SetActive(false);
 
-        // Hide info panel UI
         if (infoPanelUI != null)
             infoPanelUI.SetActive(false);
+
+        // Trigger the question sequence
+        if (questionToAnswerScript != null)
+            questionToAnswerScript.BeginQuestion();
     }
 
     void LoadInfoText()

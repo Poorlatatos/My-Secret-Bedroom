@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6542804716454131387
 Transform:
   m_ObjectHideFlags: 0
@@ -24,14 +24,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594522676361200818}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3229995, y: 0.081673026, z: -0.33599126}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalRotation: {x: -0.69596547, y: 0.12502846, z: 0.12502846, w: 0.69596547}
+  m_LocalPosition: {x: 0.8840343, y: 0.25651315, z: 0.29174116}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1510523559610707883}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 20.369}
 --- !u!1 &2287166155917636881
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,14 +62,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2287166155917636881}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.16, y: -0.103, z: 0.295}
+  m_LocalRotation: {x: -0.00828278, y: -0.04609665, z: -0.1766225, w: 0.9831638}
+  m_LocalPosition: {x: -0.160011, y: -0.103, z: 0.325}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3309859790012132518}
   m_Father: {fileID: 6542804716454131387}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -1.866, y: -5.035, z: -20.287}
 --- !u!33 &2547259177696976910
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -165,9 +165,10 @@ MonoBehaviour:
   lockOnSpeed: 2
   infoTextUI: {fileID: 0}
   infoPanelUI: {fileID: 0}
-  blackScreenOverlay: {fileID: 7711190187472733621}
+  blackScreenOverlay: {fileID: 0}
   infoTextFilePath: Assets/InfoText.txt
   typewriterEffect: {fileID: 0}
+  questionToAnswerScript: {fileID: 0}
 --- !u!54 &2303183442001568680
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -271,7 +272,7 @@ MonoBehaviour:
   m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
