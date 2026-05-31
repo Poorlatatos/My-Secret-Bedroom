@@ -43,10 +43,6 @@ public class ViewOnlyInteraction : MonoBehaviour
         if (infoTextUI != null)
             infoTextUI.text = "";
 
-        // Hide panel at start
-        if (infoPanelUI != null)
-            infoPanelUI.SetActive(false);
-
         if (!typewriterEffect.gameObject.activeInHierarchy)
         {
             typewriterEffect.gameObject.SetActive(true);

@@ -41,10 +41,6 @@ public class InteractionBehaviour : MonoBehaviour
         if (infoTextUI != null)
             infoTextUI.text = "";
 
-        // Hide UI panel at start
-        if (infoPanelUI != null)
-            infoPanelUI.SetActive(false);
-
         // Get interactable component
         simpleInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
 

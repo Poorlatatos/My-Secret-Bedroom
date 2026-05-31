@@ -39,7 +39,6 @@ public class PaperQuestion : MonoBehaviour
         if (questionText != null)
         {
             questionText.text = "";
-            questionText.gameObject.SetActive(false);
         }
         SetOptionsAlpha(0f);
     }
