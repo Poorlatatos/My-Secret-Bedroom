@@ -46,6 +46,11 @@ public class ViewOnlyInteraction : MonoBehaviour
         // Hide panel at start
         if (infoPanelUI != null)
             infoPanelUI.SetActive(false);
+
+        if (!typewriterEffect.gameObject.activeInHierarchy)
+        {
+            typewriterEffect.gameObject.SetActive(true);
+        }
     }
 
     void Update()
@@ -162,6 +167,7 @@ public class ViewOnlyInteraction : MonoBehaviour
 
     void ShowInfoText(string objectName)
     {
+        
         if (typewriterEffect == null)
             return;
 

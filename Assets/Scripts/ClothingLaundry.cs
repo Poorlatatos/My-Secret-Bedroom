@@ -6,6 +6,7 @@ public class ClothingLaundry : MonoBehaviour
     [Header("References")]
     public HeadGestureDetector gestureDetector;
     public GameObject objectToHide;
+    public Transform teleportTarget; // Assign the target position/rotation for the hidden object
     public GameObject objectToSpawnPrefab;
     public Transform rightControllerTransform; // Assign the right hand/controller transform in Inspector
     private GameObject spawnedObject;
@@ -24,8 +25,11 @@ public class ClothingLaundry : MonoBehaviour
         if (gestureDetector.DidNod())
         {
             // Hide the original object
-            if (objectToHide != null)
-                objectToHide.SetActive(false);
+            if (objectToHide != null && teleportTarget != null)
+            {
+                objectToHide.transform.position = teleportTarget.position;
+                objectToHide.transform.rotation = teleportTarget.rotation;
+            }
 
             // Spawn the new object on the right controller
             if (objectToSpawnPrefab != null && rightControllerTransform != null)

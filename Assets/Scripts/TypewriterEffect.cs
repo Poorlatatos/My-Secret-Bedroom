@@ -9,6 +9,7 @@ public class TypewriterEffect : MonoBehaviour
 
     private Coroutine typingCoroutine;
     public event System.Action OnTypingComplete;
+
     public void StartTypewriter(string text)
     {
         if (typingCoroutine != null)

@@ -54,10 +54,12 @@ public class QuestionToAnswerScript : MonoBehaviour
             gestureDetector.ClearGestures();
 
         if (yesText != null) {
+            yesText.gameObject.SetActive(true);
             yesText.text = yesLabel;
             yesText.alpha = 1f;
         }
         if (noText != null) {
+            noText.gameObject.SetActive(true);
             noText.text = noLabel;
             noText.alpha = 1f;
         }
@@ -70,6 +72,12 @@ public class QuestionToAnswerScript : MonoBehaviour
 
     public void BeginQuestion()
     {
+        if (TextDisplayManager.Instance != null && TextDisplayManager.Instance.IsBusy)
+            return; // Another text is playing
+
+        if (TextDisplayManager.Instance != null)
+            TextDisplayManager.Instance.SetBusy(true);
+
         SetOptionsAlpha(0f);
 
         if (typewriterEffect != null && questionText != null)
@@ -91,14 +99,27 @@ public class QuestionToAnswerScript : MonoBehaviour
         if (yesText != null) yesText.alpha = alpha;
         if (noText != null) noText.alpha = alpha;
     }
+    
     void ResetQuestionUI()
     {
         if (questionText != null)
+        {
             questionText.text = "";
-        SetOptionsAlpha(0f);
+        }
+        if (yesText != null) {
+            yesText.alpha = 0f;
+            yesText.text = "";
+            yesText.gameObject.SetActive(false);
+        }
+        if (noText != null) {
+            noText.alpha = 0f;
+            noText.text = "";
+            noText.gameObject.SetActive(false);
+        }
         optionsVisible = false;
         fading = false;
     }
+
     IEnumerator FadeOutOptions()
     {
         fading = true;
@@ -106,11 +127,11 @@ public class QuestionToAnswerScript : MonoBehaviour
         float elapsed = 0f;
         float startAlpha = 1f;
 
-        // Hide the question text immediately
+        // Clear the question text immediately
         if (questionText != null)
             questionText.text = "";
-            questionText.gameObject.SetActive(false);
 
+        // Fade out the yes/no options only
         while (elapsed < duration)
         {
             float alpha = Mathf.Lerp(startAlpha, 0f, elapsed / duration);
@@ -122,6 +143,17 @@ public class QuestionToAnswerScript : MonoBehaviour
         if (yesText != null) yesText.alpha = 0f;
         if (noText != null) noText.alpha = 0f;
         optionsVisible = false;
+        fading = false;
+
+        yield return new WaitForSeconds(0.5f);
+
         ResetQuestionUI();
+        
+        if (questionText != null)
+        {
+            questionText.text = "";
+        }
+        if (TextDisplayManager.Instance != null)
+            TextDisplayManager.Instance.SetBusy(false);
     }
 }
