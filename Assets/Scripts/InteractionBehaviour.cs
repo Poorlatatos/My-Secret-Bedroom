@@ -25,6 +25,8 @@ public class InteractionBehaviour : MonoBehaviour
     private bool isTriggered = false;
     private Transform targetObject;
 
+    public bool hasBeenGrabbed = false;
+
     private Dictionary<string, string> infoDict = new Dictionary<string, string>();
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable simpleInteractable;
@@ -84,16 +86,21 @@ public class InteractionBehaviour : MonoBehaviour
 
     void OnSelectEnter(SelectEnterEventArgs args)
     {
+        // Mark object as grabbed
+        if (!hasBeenGrabbed)
+        {
+            hasBeenGrabbed = true;
+            Debug.Log(gameObject.name + " has been grabbed!");
+        }
+
         isTriggered = true;
         targetObject = transform;
 
         ShowInfoText(gameObject.name);
 
-        // Show black overlay
         if (blackScreenOverlay != null)
             blackScreenOverlay.SetActive(true);
 
-        // Show info panel UI
         if (infoPanelUI != null)
             infoPanelUI.SetActive(true);
     }
