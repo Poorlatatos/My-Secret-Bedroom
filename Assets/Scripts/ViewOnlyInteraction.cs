@@ -31,6 +31,8 @@ public class ViewOnlyInteraction : MonoBehaviour
 
     private bool isLookingAtObject = false;
 
+    public bool hasBeenViewed = false;
+
     void Start()
     {
         if (vrCamera == null)
@@ -67,10 +69,15 @@ public class ViewOnlyInteraction : MonoBehaviour
                 {
                     isLookingAtObject = true;
 
+                    if (!hasBeenViewed)
+                    {
+                        hasBeenViewed = true;
+                        Debug.Log(gameObject.name + " has been viewed!");
+                    }
+
                     targetObject = transform;
 
                     ShowInfoText(gameObject.name);
-
                     // Show black screen
                     if (blackScreenOverlay != null)
                         blackScreenOverlay.SetActive(true);
@@ -163,7 +170,7 @@ public class ViewOnlyInteraction : MonoBehaviour
 
     void ShowInfoText(string objectName)
     {
-        
+
         if (typewriterEffect == null)
             return;
 
