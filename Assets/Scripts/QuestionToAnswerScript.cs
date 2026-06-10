@@ -25,10 +25,12 @@ public class QuestionToAnswerScript : MonoBehaviour
     private bool optionsVisible = false;
     private bool fading = false;
     public ClothingLaundry clothingLaundry;
+
+    public GameObject backgroundUI;
     void Start()
     {
-        // Only hide Yes/No and clear question at start
         SetOptionsAlpha(0f);
+
         if (questionText != null)
             questionText.text = "";
     }
@@ -53,12 +55,14 @@ public class QuestionToAnswerScript : MonoBehaviour
         if (gestureDetector != null)
             gestureDetector.ClearGestures();
 
-        if (yesText != null) {
+        if (yesText != null)
+        {
             yesText.gameObject.SetActive(true);
             yesText.text = yesLabel;
             yesText.alpha = 1f;
         }
-        if (noText != null) {
+        if (noText != null)
+        {
             noText.gameObject.SetActive(true);
             noText.text = noLabel;
             noText.alpha = 1f;
@@ -73,10 +77,13 @@ public class QuestionToAnswerScript : MonoBehaviour
     public void BeginQuestion()
     {
         if (TextDisplayManager.Instance != null && TextDisplayManager.Instance.IsBusy)
-            return; // Another text is playing
+            return;
 
         if (TextDisplayManager.Instance != null)
             TextDisplayManager.Instance.SetBusy(true);
+
+        if (backgroundUI != null)
+            backgroundUI.SetActive(true);
 
         SetOptionsAlpha(0f);
 
@@ -99,22 +106,28 @@ public class QuestionToAnswerScript : MonoBehaviour
         if (yesText != null) yesText.alpha = alpha;
         if (noText != null) noText.alpha = alpha;
     }
-    
+
     void ResetQuestionUI()
     {
         if (questionText != null)
         {
             questionText.text = "";
         }
-        if (yesText != null) {
+        if (yesText != null)
+        {
             yesText.alpha = 0f;
             yesText.text = "";
             yesText.gameObject.SetActive(false);
         }
-        if (noText != null) {
+        if (noText != null)
+        {
             noText.alpha = 0f;
             noText.text = "";
             noText.gameObject.SetActive(false);
+        }
+        if (backgroundUI != null)
+        {
+            backgroundUI.SetActive(false);
         }
         optionsVisible = false;
         fading = false;
@@ -148,7 +161,7 @@ public class QuestionToAnswerScript : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         ResetQuestionUI();
-        
+
         if (questionText != null)
         {
             questionText.text = "";

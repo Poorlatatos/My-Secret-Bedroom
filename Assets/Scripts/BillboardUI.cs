@@ -9,15 +9,11 @@ public class BillboardUI : MonoBehaviour
         if (playerCamera == null)
             return;
 
-        // Make UI face the player
-        Vector3 direction = playerCamera.position - transform.position;
+        transform.rotation = Quaternion.LookRotation(
+            transform.position - playerCamera.position
+        );
 
-        // Optional: lock vertical tilt (VR comfort)
-        direction.y = 0;
-
-        if (direction.sqrMagnitude > 0.001f)
-        {
-            transform.rotation = Quaternion.LookRotation(direction);
-        }
+        // Flip it around so the front faces the camera
+        transform.Rotate(0f, 180f, 0f);
     }
 }
