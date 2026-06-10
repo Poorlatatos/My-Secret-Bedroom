@@ -1,10 +1,13 @@
 using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
-using System.IO;
+using System.Collections;
+using Firebase;
+using Firebase.Database;
+using Firebase.Extensions;
 
 public class ViewOnlyInteraction : MonoBehaviour
 {
+    [Header("Camera")]
     public Camera vrCamera;
 
     public float zoomFOV = 30f;
@@ -12,26 +15,26 @@ public class ViewOnlyInteraction : MonoBehaviour
     public float lockOnSpeed = 2f;
     public float interactDistance = 10f;
 
+    [Header("UI")]
     public TMP_Text infoTextUI;
-
-    // UI PANEL IMAGE
     public GameObject infoPanelUI;
-
     public GameObject blackScreenOverlay;
-
-    public string infoTextFilePath = "Assets/InfoText.txt";
 
     public TypewriterEffect typewriterEffect;
 
     private float originalFOV;
-
     private Transform targetObject;
 
-    private Dictionary<string, string> infoDict = new Dictionary<string, string>();
-
     private bool isLookingAtObject = false;
-
     public bool hasBeenViewed = false;
+
+    private DatabaseReference dbReference;
+    private bool firebaseReady = false;
+
+    private string pendingItem = "";
+    private bool hasPendingRequest = false;
+    private bool isFetching = false;
+    private string currentItem = "";
 
     void Start()
     {
@@ -40,29 +43,67 @@ public class ViewOnlyInteraction : MonoBehaviour
 
         originalFOV = vrCamera.fieldOfView;
 
-        LoadInfoText();
-
         if (infoTextUI != null)
             infoTextUI.text = "";
 
-        if (!typewriterEffect.gameObject.activeInHierarchy)
-        {
+        if (typewriterEffect != null && !typewriterEffect.gameObject.activeInHierarchy)
             typewriterEffect.gameObject.SetActive(true);
-        }
+
+        InitializeFirebase();
+    }
+
+
+    void FetchFromFirebase(string itemName)
+    {
+        dbReference.Child("Info").Child(itemName)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result.Exists)
+                {
+                    string rawText = task.Result.Value.ToString();
+
+                    string[] segments =
+                        rawText.Split(new string[] { "<br>" }, System.StringSplitOptions.None);
+
+                    StopAllCoroutines();
+                    StartCoroutine(ShowInfoTextCoroutine(segments));
+                }
+            });
+    }
+    void InitializeFirebase()
+    {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
+            var status = task.Result;
+
+            if (status == DependencyStatus.Available)
+            {
+                dbReference = FirebaseDatabase.DefaultInstance.RootReference;
+                firebaseReady = true;
+
+                Debug.Log("Firebase READY");
+
+                if (hasPendingRequest)
+                {
+                    hasPendingRequest = false;
+                    FetchFromFirebase(pendingItem);
+                }
+            }
+            else
+            {
+                Debug.LogError("Firebase failed: " + status);
+            }
+        });
     }
 
     void Update()
     {
-        Ray ray = new Ray(
-            vrCamera.transform.position,
-            vrCamera.transform.forward
-        );
-
+        Ray ray = new Ray(vrCamera.transform.position, vrCamera.transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
-            // Check if player is looking at this object
             if (hit.transform == transform)
             {
                 if (!isLookingAtObject)
@@ -72,130 +113,120 @@ public class ViewOnlyInteraction : MonoBehaviour
                     if (!hasBeenViewed)
                     {
                         hasBeenViewed = true;
-                        Debug.Log(gameObject.name + " has been viewed!");
+                        Debug.Log(gameObject.name + " viewed");
                     }
 
                     targetObject = transform;
 
-                    ShowInfoText(gameObject.name);
-                    // Show black screen
+                    LoadDescription(gameObject.name);
+
                     if (blackScreenOverlay != null)
                         blackScreenOverlay.SetActive(true);
 
-                    // Show UI panel
                     if (infoPanelUI != null)
                         infoPanelUI.SetActive(true);
                 }
 
-                // Lock camera onto object
+                // lock rotation
                 Vector3 direction =
                     (targetObject.position - vrCamera.transform.position).normalized;
 
                 Quaternion lookRotation =
                     Quaternion.LookRotation(direction);
 
-                vrCamera.transform.rotation = Quaternion.Slerp(
-                    vrCamera.transform.rotation,
-                    lookRotation,
-                    Time.deltaTime * lockOnSpeed
-                );
+                vrCamera.transform.rotation =
+                    Quaternion.Slerp(
+                        vrCamera.transform.rotation,
+                        lookRotation,
+                        Time.deltaTime * lockOnSpeed
+                    );
 
-                // Zoom camera
-                vrCamera.fieldOfView = Mathf.Lerp(
-                    vrCamera.fieldOfView,
-                    zoomFOV,
-                    Time.deltaTime * zoomSpeed
-                );
+                // zoom
+                vrCamera.fieldOfView =
+                    Mathf.Lerp(vrCamera.fieldOfView, zoomFOV, Time.deltaTime * zoomSpeed);
 
                 return;
             }
         }
 
-        // If player stopped looking
+        // STOP LOOKING
         if (isLookingAtObject)
         {
             isLookingAtObject = false;
-
             targetObject = null;
 
             if (typewriterEffect != null)
                 typewriterEffect.Clear();
 
-            // Hide black screen
             if (blackScreenOverlay != null)
                 blackScreenOverlay.SetActive(false);
 
-            // Hide UI panel
             if (infoPanelUI != null)
                 infoPanelUI.SetActive(false);
         }
 
-        // Reset zoom
-        vrCamera.fieldOfView = Mathf.Lerp(
-            vrCamera.fieldOfView,
-            originalFOV,
-            Time.deltaTime * zoomSpeed
-        );
+        // RESET ZOOM
+        vrCamera.fieldOfView =
+            Mathf.Lerp(vrCamera.fieldOfView, originalFOV, Time.deltaTime * zoomSpeed);
     }
 
-    void LoadInfoText()
+    void LoadDescription(string itemName)
     {
-        if (!File.Exists(infoTextFilePath))
+        if (!firebaseReady)
         {
-            Debug.LogError("File not found!");
+            Debug.LogWarning("Firebase not ready yet.");
             return;
         }
 
-        string[] lines = File.ReadAllLines(infoTextFilePath);
-
-        foreach (string line in lines)
-        {
-            if (string.IsNullOrWhiteSpace(line))
-                continue;
-
-            string[] parts = line.Split(new char[] { '-' }, 2);
-
-            if (parts.Length < 2)
-                continue;
-
-            string key = parts[0].Trim();
-
-            string value = parts[1]
-                .Trim()
-                .Trim('[', ']');
-
-            infoDict[key] = value;
-        }
-    }
-
-    void ShowInfoText(string objectName)
-    {
-
-        if (typewriterEffect == null)
+        // Prevent duplicate requests
+        if (isFetching && currentItem == itemName)
             return;
 
-        if (infoDict.TryGetValue(objectName, out string info))
-        {
-            typewriterEffect.StartTypewriter(info);
-            StopAllCoroutines(); // Stop any previous coroutines
-            StartCoroutine(ShowInfoTextCoroutine(info));
-        }
-        else
-        {
-            typewriterEffect.Clear();
-        }
+        isFetching = true;
+        currentItem = itemName;
+
+        dbReference.Child("Info").Child(itemName)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                isFetching = false;
+
+                if (!task.IsCompletedSuccessfully || !task.Result.Exists)
+                {
+                    Debug.LogWarning("No data for: " + itemName);
+
+                    if (infoTextUI != null)
+                        infoTextUI.text = "No information available.";
+
+                    return;
+                }
+
+                string rawText = task.Result.Value.ToString();
+
+                string[] segments =
+                    rawText.Split(new string[] { "<br>" }, System.StringSplitOptions.None);
+
+                StopAllCoroutines();
+                StartCoroutine(ShowInfoTextCoroutine(segments));
+            });
     }
 
-    System.Collections.IEnumerator ShowInfoTextCoroutine(string info)
+    IEnumerator ShowInfoTextCoroutine(string[] segments)
     {
-        string[] segments = info.Split(new string[] { "<br>" }, System.StringSplitOptions.None);
-
         foreach (string segment in segments)
         {
-            typewriterEffect.Clear();
-            typewriterEffect.StartTypewriter(segment.Trim());
-            // Wait for the typewriter to finish (if you have a way to detect this), or just wait a fixed time
-            // Here, we wait 4 seconds after each segment
+            string clean = segment.Trim();
+
+            if (typewriterEffect != null)
+            {
+                typewriterEffect.Clear();
+                typewriterEffect.StartTypewriter(clean);
+            }
+            else if (infoTextUI != null)
+            {
+                infoTextUI.text = clean;
+            }
+
             yield return new WaitForSeconds(4f);
         }
     }

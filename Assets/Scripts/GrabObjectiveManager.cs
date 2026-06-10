@@ -74,7 +74,7 @@ public class GrabObjectiveManager : MonoBehaviour
 
         creditsCanvas.SetActive(true);
         creditsCanvas.transform.SetParent(vrCamera);
-        creditsCanvas.transform.localPosition = new Vector3(0f, 0f, 0.905f);
+        creditsCanvas.transform.localPosition = new Vector3(0f, 0f, 1.1f);
         creditsCanvas.transform.localRotation = Quaternion.identity;
 
         // 🔥 HIDE VR CONTROLLERS

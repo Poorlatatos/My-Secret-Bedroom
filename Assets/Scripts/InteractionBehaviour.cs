@@ -1,22 +1,26 @@
 using UnityEngine;
 using TMPro;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+using Firebase;
+using Firebase.Database;
+using Firebase.Extensions;
 using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.Networking;
+using System.Collections.Generic;
+using System.Collections;
 
 public class InteractionBehaviour : MonoBehaviour
 {
+    [Header("Camera Settings")]
     public Camera vrCamera;
     public float zoomFOV = 30f;
     public float zoomSpeed = 2f;
     public float lockOnSpeed = 2f;
 
+    [Header("UI References")]
     public TMP_Text infoTextUI;
     public GameObject infoPanelUI;
     public GameObject blackScreenOverlay;
 
+    [Header("Scripts")]
     public TypewriterEffect typewriterEffect;
     public QuestionToAnswerScript questionToAnswerScript;
 
@@ -26,7 +30,7 @@ public class InteractionBehaviour : MonoBehaviour
 
     public bool hasBeenGrabbed = false;
 
-    private Dictionary<string, string> infoDict = new Dictionary<string, string>();
+    private DatabaseReference dbReference;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable simpleInteractable;
 
@@ -37,78 +41,34 @@ public class InteractionBehaviour : MonoBehaviour
 
         originalFOV = vrCamera.fieldOfView;
 
-        // ✅ Use coroutine for Android/Quest
-        StartCoroutine(LoadInfoText());
-
         if (infoTextUI != null)
             infoTextUI.text = "";
 
         simpleInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable>();
-        simpleInteractable.selectEntered.AddListener(OnSelectEnter);
-        simpleInteractable.selectExited.AddListener(OnSelectExit);
+
+        if (simpleInteractable != null)
+        {
+            simpleInteractable.selectEntered.AddListener(OnSelectEnter);
+            simpleInteractable.selectExited.AddListener(OnSelectExit);
+        }
+
+        InitializeFirebase();
     }
 
-    // ✅ This replaces LoadInfoText() entirely
-    IEnumerator LoadInfoText()
+    void InitializeFirebase()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "InfoText.txt");
-
-        UnityWebRequest request = UnityWebRequest.Get(path);
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
-            string[] lines = request.downloadHandler.text.Split('\n');
-
-            foreach (string line in lines)
+            if (task.Result == DependencyStatus.Available)
             {
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
-
-                string[] parts = line.Split(new char[] { '-' }, 2);
-
-                if (parts.Length < 2)
-                    continue;
-
-                string key = parts[0].Trim();
-                string value = parts[1].Trim().Trim('[', ']');
-
-                infoDict[key] = value;
-                Debug.Log("Loaded: " + key + " -> " + value);
+                dbReference = FirebaseDatabase.DefaultInstance.RootReference;
+                Debug.Log("Firebase Initialized");
             }
-        }
-        else
-        {
-            Debug.LogError("Failed to load InfoText.txt: " + request.error);
-        }
-    }
-
-    void Update()
-    {
-        if (isTriggered && targetObject != null)
-        {
-            Vector3 direction = (targetObject.position - vrCamera.transform.position).normalized;
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            vrCamera.transform.rotation = Quaternion.Slerp(
-                vrCamera.transform.rotation,
-                lookRotation,
-                Time.deltaTime * lockOnSpeed
-            );
-
-            vrCamera.fieldOfView = Mathf.Lerp(
-                vrCamera.fieldOfView,
-                zoomFOV,
-                Time.deltaTime * zoomSpeed
-            );
-        }
-        else
-        {
-            vrCamera.fieldOfView = Mathf.Lerp(
-                vrCamera.fieldOfView,
-                originalFOV,
-                Time.deltaTime * zoomSpeed
-            );
-        }
+            else
+            {
+                Debug.LogError("Firebase dependency error: " + task.Result);
+            }
+        });
     }
 
     void OnSelectEnter(SelectEnterEventArgs args)
@@ -116,13 +76,12 @@ public class InteractionBehaviour : MonoBehaviour
         if (!hasBeenGrabbed)
         {
             hasBeenGrabbed = true;
-            Debug.Log(gameObject.name + " has been grabbed!");
         }
 
         isTriggered = true;
         targetObject = transform;
 
-        ShowInfoText(gameObject.name);
+        LoadDescription(gameObject.name);
 
         if (blackScreenOverlay != null)
             blackScreenOverlay.SetActive(true);
@@ -149,32 +108,104 @@ public class InteractionBehaviour : MonoBehaviour
             questionToAnswerScript.BeginQuestion();
     }
 
-    void ShowInfoText(string objectName)
+    void LoadDescription(string itemName)
     {
-        if (typewriterEffect == null)
+        if (dbReference == null)
+        {
+            Debug.LogWarning("Firebase not ready yet.");
             return;
-
-        if (infoDict.TryGetValue(objectName, out string info))
-        {
-            StopAllCoroutines();
-            StartCoroutine(ShowInfoTextCoroutine(info));
         }
-        else
+
+        dbReference.Child("Info").Child(itemName)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result.Exists)
+                {
+                    string rawText = task.Result.Value.ToString();
+
+                    // SAME LOGIC AS YOUR TXT FILE (<br> SPLIT)
+                    string[] lines = rawText.Split(new string[] { "<br>" }, System.StringSplitOptions.None);
+
+                    if (typewriterEffect != null)
+                        typewriterEffect.Clear();
+
+                    StartCoroutine(DisplayLines(lines));
+                }
+                else
+                {
+                    Debug.LogWarning("No description found for: " + itemName);
+
+                    if (infoTextUI != null)
+                        infoTextUI.text = "No information available.";
+                }
+            });
+    }
+
+    IEnumerator DisplayLines(string[] lines)
+    {
+        foreach (string line in lines)
         {
-            Debug.LogWarning("No info found for: " + objectName);
-            typewriterEffect.Clear();
+            string cleanLine = line.Trim();
+
+            if (string.IsNullOrEmpty(cleanLine))
+                continue;
+
+            if (typewriterEffect != null)
+            {
+                typewriterEffect.Clear();
+                typewriterEffect.StartTypewriter(cleanLine);
+            }
+            else if (infoTextUI != null)
+            {
+                infoTextUI.text = cleanLine;
+            }
+
+            yield return new WaitForSeconds(4f);
         }
     }
 
-    IEnumerator ShowInfoTextCoroutine(string info)
+    void Update()
     {
-        string[] segments = info.Split(new string[] { "<br>" }, System.StringSplitOptions.None);
-
-        foreach (string segment in segments)
+        if (isTriggered && targetObject != null)
         {
-            typewriterEffect.Clear();
-            typewriterEffect.StartTypewriter(segment.Trim());
-            yield return new WaitForSeconds(4f);
+            Vector3 direction =
+                (targetObject.position - vrCamera.transform.position).normalized;
+
+            Quaternion lookRotation =
+                Quaternion.LookRotation(direction);
+
+            vrCamera.transform.rotation =
+                Quaternion.Slerp(
+                    vrCamera.transform.rotation,
+                    lookRotation,
+                    Time.deltaTime * lockOnSpeed
+                );
+
+            vrCamera.fieldOfView =
+                Mathf.Lerp(
+                    vrCamera.fieldOfView,
+                    zoomFOV,
+                    Time.deltaTime * zoomSpeed
+                );
+        }
+        else
+        {
+            vrCamera.fieldOfView =
+                Mathf.Lerp(
+                    vrCamera.fieldOfView,
+                    originalFOV,
+                    Time.deltaTime * zoomSpeed
+                );
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (simpleInteractable != null)
+        {
+            simpleInteractable.selectEntered.RemoveListener(OnSelectEnter);
+            simpleInteractable.selectExited.RemoveListener(OnSelectExit);
         }
     }
 }
