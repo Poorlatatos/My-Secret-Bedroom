@@ -1222,7 +1222,6 @@ MonoBehaviour:
   infoTextUI: {fileID: 683268160}
   infoPanelUI: {fileID: 1047671759}
   blackScreenOverlay: {fileID: 0}
-  infoTextFilePath: Assets/InfoText.txt
   typewriterEffect: {fileID: 683268159}
   questionToAnswerScript: {fileID: 188632607}
   hasBeenGrabbed: 0
@@ -1352,9 +1351,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 238361404}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.8913999}
+  m_LocalScale: {x: 0.0009583976, y: 0.0009583976, z: 0.0009583976}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1343918771}
@@ -1366,9 +1365,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.0009999275}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &238361406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1408,7 +1407,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &238361408
 Canvas:
   m_ObjectHideFlags: 0
@@ -1418,15 +1417,15 @@ Canvas:
   m_GameObject: {fileID: 238361404}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 2
+  m_Camera: {fileID: 1630459153}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1476,6 +1475,10 @@ PrefabInstance:
       propertyPath: infoPanelUI
       value: 
       objectReference: {fileID: 808496943}
+    - target: {fileID: 4583250751934346065, guid: 0b959b2d86573dc45ae14e40cfea52bb, type: 3}
+      propertyPath: infoTextFilePath
+      value: Assets/StreamingAssets/InfoText.txt
+      objectReference: {fileID: 0}
     - target: {fileID: 4583250751934346065, guid: 0b959b2d86573dc45ae14e40cfea52bb, type: 3}
       propertyPath: typewriterEffect
       value: 
@@ -1796,7 +1799,7 @@ MonoBehaviour:
   infoTextUI: {fileID: 1019713442}
   infoPanelUI: {fileID: 352833278}
   blackScreenOverlay: {fileID: 0}
-  infoTextFilePath: Assets/InfoText.txt
+  infoTextFilePath: Assets/StreamingAssets/InfoText.txt
   typewriterEffect: {fileID: 1019713441}
   hasBeenViewed: 0
 --- !u!4 &325634397 stripped
@@ -2968,8 +2971,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 690184330}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.8913999}
+  m_LocalScale: {x: 0.0009583976, y: 0.0009583976, z: 0.0009583976}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1884353706}
@@ -2980,9 +2983,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.0009999275}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &690184332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3022,7 +3025,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &690184334
 Canvas:
   m_ObjectHideFlags: 0
@@ -3032,10 +3035,10 @@ Canvas:
   m_GameObject: {fileID: 690184330}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_Camera: {fileID: 1630459153}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -3044,7 +3047,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 999
   m_TargetDisplay: 0
 --- !u!114 &735219789 stripped
 MonoBehaviour:
@@ -3326,7 +3329,6 @@ MonoBehaviour:
   infoTextUI: {fileID: 2029036657}
   infoPanelUI: {fileID: 0}
   blackScreenOverlay: {fileID: 0}
-  infoTextFilePath: Assets/InfoText.txt
   typewriterEffect: {fileID: 0}
   questionToAnswerScript: {fileID: 0}
   hasBeenGrabbed: 0
@@ -4322,7 +4324,6 @@ MonoBehaviour:
   infoTextUI: {fileID: 1230254945}
   infoPanelUI: {fileID: 978184462}
   blackScreenOverlay: {fileID: 0}
-  infoTextFilePath: Assets/InfoText.txt
   typewriterEffect: {fileID: 1230254944}
   questionToAnswerScript: {fileID: 1114700081}
   hasBeenGrabbed: 0
@@ -4605,7 +4606,6 @@ MonoBehaviour:
   infoTextUI: {fileID: 2029036657}
   infoPanelUI: {fileID: 0}
   blackScreenOverlay: {fileID: 0}
-  infoTextFilePath: Assets/InfoText.txt
   typewriterEffect: {fileID: 0}
   questionToAnswerScript: {fileID: 0}
   hasBeenGrabbed: 0
@@ -5040,6 +5040,8 @@ MonoBehaviour:
   - {fileID: 1233458774}
   - {fileID: 1652365399}
   creditsCanvas: {fileID: 690184330}
+  leftController: {fileID: 1484366521}
+  rightController: {fileID: 2120247952}
 --- !u!4 &1208510479
 Transform:
   m_ObjectHideFlags: 0
@@ -6134,6 +6136,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrabTracker
   hasBeenGrabbed: 0
+--- !u!1 &1484366521 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 202364687, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 1849870362}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1559684643
 GameObject:
   m_ObjectHideFlags: 0
@@ -7401,6 +7408,10 @@ PrefabInstance:
       propertyPath: infoPanelUI
       value: 
       objectReference: {fileID: 898605773}
+    - target: {fileID: 7780894267486097542, guid: feed76a5977888941806f9a6dae0e163, type: 3}
+      propertyPath: infoTextFilePath
+      value: Assets/StreamingAssets/InfoText.txt
+      objectReference: {fileID: 0}
     - target: {fileID: 7780894267486097542, guid: feed76a5977888941806f9a6dae0e163, type: 3}
       propertyPath: typewriterEffect
       value: 
@@ -8797,7 +8808,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: -251}
+  m_AnchoredPosition: {x: 0, y: -251}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2065298009
@@ -8823,7 +8834,7 @@ MonoBehaviour:
   m_text: 'We hope that you have enjoyed My Secret Bedroom and learnt more about
     the services that CHAT provides in the youth mental health scene.
 
-    
+
 
     Some
     signs of distress are loud, visible and easier to detect (e.g., drastic drop
@@ -8834,27 +8845,27 @@ MonoBehaviour:
     signs of distress to the surface, so that we can have an idea of how to look
     out for each other.
 
-    
 
-    In our social circles, there may be someone like
-    Ash - a friend, a partner, a sibling or a child. They might be struggling silently,
+
+    In our social circles, there may be someone like Ash
+    - a friend, a partner, a sibling or a child. They might be struggling silently,
     but they are still trying their very best to show up for themselves, their loved
     ones and even others in need. Instead of making assumptions when their behaviours
     deviate from the norm, we would like to encourage every one of us to check in
     on them and remain open minded if they choose to share.
 
-    
 
-    The world
-    will become a better place when we learn to show more care towards the people
-    around us, and we hope that you will remember to love yourself as well.
 
-    
+    The world will
+    become a better place when we learn to show more care towards the people around
+    us, and we hope that you will remember to love yourself as well.
+
+
 
     Till
     next time, take care!
 
-    
+
 
     With love,
 
@@ -8973,7 +8984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: -55}
+  m_AnchoredPosition: {x: 0, y: -55}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2085837802
@@ -9206,6 +9217,11 @@ Light:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4328301507690439942, guid: 4df9705f59d76734fad8114396147b40, type: 3}
   m_PrefabInstance: {fileID: 8069423997264003902}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2120247952 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1670256624, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 1849870362}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2120744021
 PrefabInstance:
@@ -9467,6 +9483,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1600881461}
     - target: {fileID: 1408693505244461043, guid: b4c9fe50339406d4d865498083548ecc, type: 3}
+      propertyPath: infoTextFilePath
+      value: Assets/StreamingAssets/InfoText.txt
+      objectReference: {fileID: 0}
+    - target: {fileID: 1408693505244461043, guid: b4c9fe50339406d4d865498083548ecc, type: 3}
       propertyPath: typewriterEffect
       value: 
       objectReference: {fileID: 1751425231}
@@ -9682,6 +9702,10 @@ PrefabInstance:
       propertyPath: infoPanelUI
       value: 
       objectReference: {fileID: 1099626267}
+    - target: {fileID: 3174290837105320440, guid: 2b82c906bfe115745bea4060732edcfc, type: 3}
+      propertyPath: infoTextFilePath
+      value: Assets/StreamingAssets/InfoText.txt
+      objectReference: {fileID: 0}
     - target: {fileID: 3174290837105320440, guid: 2b82c906bfe115745bea4060732edcfc, type: 3}
       propertyPath: typewriterEffect
       value: 
@@ -10225,6 +10249,10 @@ PrefabInstance:
       propertyPath: infoPanelUI
       value: 
       objectReference: {fileID: 584027487}
+    - target: {fileID: 1417773275601208405, guid: 4df9705f59d76734fad8114396147b40, type: 3}
+      propertyPath: infoTextFilePath
+      value: Assets/StreamingAssets/InfoText.txt
+      objectReference: {fileID: 0}
     - target: {fileID: 1417773275601208405, guid: 4df9705f59d76734fad8114396147b40, type: 3}
       propertyPath: typewriterEffect
       value: 

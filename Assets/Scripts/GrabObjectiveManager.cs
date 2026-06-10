@@ -16,8 +16,15 @@ public class GrabObjectiveManager : MonoBehaviour
     private CanvasRenderer[] canvasRenderers;
     private bool loadedScene = false;
 
+    private Transform vrCamera;
+
+    public GameObject leftController;
+    public GameObject rightController;
+
     void Start()
     {
+        vrCamera = Camera.main.transform;
+
         if (creditsCanvas != null)
         {
             canvasRenderers = creditsCanvas.GetComponentsInChildren<CanvasRenderer>();
@@ -63,19 +70,23 @@ public class GrabObjectiveManager : MonoBehaviour
 
     IEnumerator ShowCreditsThenReturn()
     {
-        // Wait BEFORE showing credits
         yield return new WaitForSeconds(10f);
 
         creditsCanvas.SetActive(true);
+        creditsCanvas.transform.SetParent(vrCamera);
+        creditsCanvas.transform.localPosition = new Vector3(0f, 0f, 0.905f);
+        creditsCanvas.transform.localRotation = Quaternion.identity;
 
-        // Fade + move settings
+        // 🔥 HIDE VR CONTROLLERS
+        if (leftController != null)
+            leftController.SetActive(false);
+
+        if (rightController != null)
+            rightController.SetActive(false);
+
         float duration = 2f;
         float t = 0f;
 
-        Vector3 startPos = creditsCanvas.transform.position;
-        Vector3 endPos = startPos + Vector3.up * 1.5f; // move up
-
-        // Fade in + move up together
         while (t < duration)
         {
             t += Time.deltaTime;
@@ -87,20 +98,14 @@ public class GrabObjectiveManager : MonoBehaviour
                 r.SetAlpha(alpha);
             }
 
-            creditsCanvas.transform.position = Vector3.Lerp(startPos, endPos, t / duration);
-
             yield return null;
         }
 
-        // Ensure final state
         foreach (CanvasRenderer r in canvasRenderers)
         {
             r.SetAlpha(1f);
         }
 
-        creditsCanvas.transform.position = endPos;
-
-        // Wait during credits
         yield return new WaitForSeconds(15f);
 
         SceneManager.LoadScene(0);
