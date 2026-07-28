@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "My Secret Bedroom.sln"
+    "dotnet.defaultSolution": "My-Secret-Bedroom.sln"
 }
