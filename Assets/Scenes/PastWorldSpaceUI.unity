@@ -9385,6 +9385,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneSelector
   sceneName: WorldSpaceUI
+  fadeToBlack: 1
+  fadeDuration: 1
 --- !u!1 &2065298007
 GameObject:
   m_ObjectHideFlags: 0
